@@ -1,0 +1,124 @@
+/*
+To customize the look and feel of Ionic, you can override the variables
+in ionic's _variables.scss file.
+
+For example, you might change some of the default colors:
+
+$light:                           #fff !default;
+$stable:                          #f8f8f8 !default;
+$positive:                        #387ef5 !default;
+$calm:                            #11c1f3 !default;
+$balanced:                        #33cd5f !default;
+$energized:                       #ffc900 !default;
+$assertive:                       #ef473a !default;
+$royal:                           #886aea !default;
+$dark:                            #444 !default;
+*/
+$balanced:                        #3A9045   !default;
+$bgcolor: #fff;
+$positive: #46629E   !default;
+
+// The path for our ionicons font files, relative to the built CSS in www/css
+$ionicons-font-path: "../lib/ionic/fonts" !default;
+
+// Include all of Ionic
+@import "www/lib/ionic/scss/ionic";
+
+$dark: #474747;
+
+/*dark is class added to ion-content, since ion-conte*/
+/*is made up of multiple pieces and is a pain to style each*/
+.dark {
+  background-color: $dark !important;
+  color: #ffffff;
+}
+
+/*Set the background to transparent for ion-item*/
+.dark .item {
+  background-color: transparent;
+  border: none;
+  border-top: 1px solid;
+  border-bottom: 2px solid;
+  border-color: $dark;
+  color: #F0F1F1;
+}
+
+/*Changes the border for the last item*/
+.dark .item:last-child {
+  border-bottom: 1px solid #333333;
+}
+
+/*Ion-item adds item-complex and an inner div, .item-content*/
+/* this needs to be transparent too, but doesnt need borders*/
+.dark .item-complex .item-content, .dark .item-radio .item-content {
+  background-color: transparent;
+}
+
+
+/*Just makes the type white*/
+.dark h2,
+.dark h3,
+.dark p,
+.dark a {
+  color: #F0F1F1;
+}
+
+
+
+.bg-main {
+    background: #000 url("../img/bg-black.jpg") no-repeat fixed center; 
+}
+
+/*
+.bar-header {
+   height: 70px;
+}
+.bar-header .title {
+   line-height: 70px;
+   color: #fff;
+}
+.bar-header .title h2, .bar-header .title p {
+   color: #fff;
+   line-height: 20px; 
+}
+.has-header {
+   top: 70px;
+}
+
+.profile-avatar {
+    background-color: $balanced;
+}
+.bar .title {
+    height: 70px;
+}
+*/
+
+.scroll {
+    height: 100%;
+}
+ 
+#map {
+    width: 100%;
+     height:50vh; 
+}
+.home .scroll-content {
+  display: table !important;
+  width: 100% !important;
+  height: 100% !important;
+ 
+  text-align: center;
+}
+.home .scroll {
+  display: table-cell;
+  vertical-align: middle;
+}
+.logo {
+    color: #fff;
+    font-size: 60px;
+}
+.background, .background .pane, .background .item, .background .item-complex .item-content {
+    background-color: $bgcolor;
+}
+.pane {
+    background-color: $bgcolor;
+}

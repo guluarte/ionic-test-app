@@ -1,0 +1,28 @@
+<ion-view title="Direccion">
+    <ion-content overflow-scroll="true" padding="true" class="has-header">
+        <div id="map" data-tap-disabled="true"></div>
+        <form>
+            <div class="list">
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Calle</span>
+                    <input type="text" placeholder="" ng-model="user.address.street" required>
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Colonia</span>
+                    <input type="text" placeholder="" ng-model="user.address.neightboor" required>
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Numero Exterior</span>
+                    <input type="text" placeholder="" ng-model="user.address.streetNumber" required>
+                </label>
+                <div ng-show="isErrored">
+                    <label class="item item-input item-stacked-label">
+                        <span class="input-label">Por favor llena todos los campos.</span>
+                    </label>
+
+                </div>
+                <input type="submit" class="button button-balanced button-block " ng-click="canjear(user)" value="CANJEAR" />
+            </div>
+        </form>
+    </ion-content>
+</ion-view>

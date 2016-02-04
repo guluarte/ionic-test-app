@@ -1,0 +1,12 @@
+{
+  "name": "paat-usuario",
+  "app_id": "09aa96d5",
+  "gulpStartupTasks": [
+    "sass",
+    "watch"
+  ],
+  "watchPatterns": [
+    "www/**/*",
+    "!www/lib/**/*"
+  ]
+}

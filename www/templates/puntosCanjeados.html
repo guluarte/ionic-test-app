@@ -1,0 +1,22 @@
+<ion-view title="Solicitud de colecta recibida" cache-view="false" >
+    <ion-content overflow-scroll="true" padding="true" class="has-header">
+        <div class="list card">
+
+            <div class="item item-avatar">
+                <img ng-src="{{ user.facebook.profileImageURL }}">
+                <h2>{{ user.facebook.displayName }}</h2>
+                <p>{{ user.points }} <span class="ion-ios-star"></span></p>
+            </div>
+
+            <div class="item item-body">
+                <img class="full-image" src="img/gratz.jpg">
+                <p>
+                    Pronto un representante de PAAT pasara por los residuos reciclables.
+                </p>
+            </div>
+
+        </div>
+        <!--<button class="button button-positive button-block " ng-click="shareViaFacebook()">COMPARTIR</button>-->
+        <a ui-sref="menu.amigos" class="button button-balanced button-block ">REGRESAR</a>
+    </ion-content>
+</ion-view>

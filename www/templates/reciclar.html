@@ -1,0 +1,19 @@
+<ion-view title="Reciclar">
+
+    <ion-content overflow-scroll="true" padding="true" class="has-header">
+
+        <div class="list" ng-repeat="item in items">
+
+            <div class="card" ui-sref="menu.direccion">
+                <div class="item item-divider">
+                    {{ item.name }}
+                </div>
+                <div class="item item-text-wrap">
+                    <img class="full-image" ng-src="{{ item.src }}">
+                </div>
+            </div>
+        </div>
+
+
+    </ion-content>
+</ion-view>
