@@ -1,4 +1,5 @@
-<ion-view title="Amigos" ng-init="init()" cache-view="false">
+<ion-view title="PAAT" ng-init="doRefresh()">
+    <!--
     <ion-nav-title class="main-screen">
         <div class="item item-avatar profile-avatar" ui-sref="menu.usuario">
             <img ng-src="{{ user.facebook.profileImageURL }}">
@@ -7,18 +8,38 @@
         </div>
 
     </ion-nav-title>
-    <ion-content  padding="true" class="has-header">
+    -->
+
+    <ion-content padding="true" class="has-header padding-bottom">
         <ion-refresher on-refresh="doRefresh()">
         </ion-refresher>
-        <h3>Top PaatVengers de tu zona</h3>
 
-        <div ng-repeat="friend in friends | orderBy:'-points'">
+        <div class="card">
+            <div class="item item-divider">
+                {{ user.facebook.displayName }}
+            </div>
             <div class="item item-avatar">
-                <img ng-src="{{ friend.facebook.profileImageURL }}">
-                <h2>{{ friend.facebook.displayName }}</h2>
-                <p>{{ friend.points || 0 }} <span class="ion-ios-star"></span></p>
+                <img ng-src="{{ user.facebook.profileImageURL }}">
+                <h2>{{ user.facebook.displayName }}</h2>
+                <p>{{ user.points }} <span class="ion-ios-star"></span></p>
+            </div>
+
+        </div>
+
+        <div class="card">
+            <div class="item item-divider">
+                Top PaatVengers de tu zona
+            </div>
+
+            <div ng-repeat="friend in friends | orderBy:'-points'">
+                <div class="item item-avatar">
+                    <img ng-src="{{ friend.facebook.profileImageURL }}">
+                    <h2>{{ friend.facebook.displayName }}</h2>
+                    <p>{{ friend.points || 0 }} <span class="ion-ios-star"></span></p>
+                </div>
             </div>
         </div>
+
     </ion-content>
 
     <div class="bar bar-footer bar-balanced">

@@ -13,8 +13,7 @@
         </ion-nav-view>
     </ion-side-menu-content>
 
-
-    <ion-side-menu side="left">
+    <ion-side-menu side="left" expose-aside-when="large">
 
         <ion-header-bar class="bar-balanced">
             <div class="title">Menu</div>
@@ -22,8 +21,9 @@
 
         <ion-content padding="false" class="side-menu-left has-header dark" ion-content="">
             <ion-list>
-                <ion-item ui-sref="menu.amigos" menu-close="">Usuario</ion-item>
+                <ion-item ui-sref="menu.amigos" menu-close="">Perfil</ion-item>
                 <ion-item ui-sref="menu.amigos" menu-close="">Amigos</ion-item>
+                <ion-item ui-sref="menu.amigos" menu-close="">Premios</ion-item>
                 <ion-item ui-sref="menu.amigos" menu-close="">Logros</ion-item>
                 <ion-item ui-sref="menu.reciclar" menu-close="">Reciclar</ion-item>
             </ion-list>

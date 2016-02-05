@@ -1,6 +1,6 @@
 angular.module('app.controllers', [])
 
-    .controller('PaatCtrl', function ($scope, Auth, TimeStamp, $localStorage, $state, $ionicHistory, UserService) {
+    .controller('PaatCtrl', function ($scope, Auth, $localStorage, $state, $ionicHistory, UserService) {
 
         $ionicHistory.nextViewOptions({
             historyRoot: true
@@ -30,11 +30,11 @@ angular.module('app.controllers', [])
                             user.uid = authData.uid;
                             user.points = 50;
                             user.facebook = authData.facebook;
-                            user.lastActive = TimeStamp;
+                            user.lastActive = (Date.now() / 1000 | 0);
                             user.$save();
                         } else {
                             console.log("updating");
-                            UserService.update(authData.facebook.id, { 'facebook': authData.facebook, 'lastActive' : TimeStamp });
+                            UserService.update($localStorage.id, { 'facebook': authData.facebook, 'lastActive': (Date.now() / 1000 | 0) });
                         }
 
                         $state.go('menu.amigos');
@@ -45,7 +45,7 @@ angular.module('app.controllers', [])
 
     })
 
-    .controller('amigosCtrl', function ($scope, UserService, $localStorage, $state, $ionicHistory) {
+    .controller('amigosCtrl', function ($scope, $q, UserService, $localStorage, $state, $ionicHistory, $ionicLoading) {
 
         $ionicHistory.nextViewOptions({
             historyRoot: true
@@ -53,42 +53,67 @@ angular.module('app.controllers', [])
 
         $scope.$on('$ionicView.beforeEnter', function (e, config) {
             config.enableBack = false;
+            $ionicHistory.clearHistory();
         });
 
+        var userFirebaseObj;
+        
         var getProfile = function () {
 
             if ($localStorage.hasOwnProperty("id") === true) {
 
                 console.log($localStorage.id);
 
-                $scope.user = UserService.getId($localStorage.id);
+                userFirebaseObj = UserService.getId($localStorage.id);
 
-                $scope.user.$loaded().then(function () {
+                userFirebaseObj.$bindTo($scope, "user");
+
+                userFirebaseObj.$loaded().then(function () {
+                    
                     console.log($scope.user);
+                    
                     if ($scope.user.points == null) {
-                        alert("Hubo un error al iniciar sesion.");
-                        $state.go('paat');
+
+                        $ionicLoading.hide();
+                        $scope.$broadcast('scroll.refreshComplete');
+
+                        //alert("Hubo un error al iniciar sesion.");
+                        //$state.go('paat');
                     }
+
                 });
 
             } else {
+
+                $ionicLoading.hide();
+                $scope.$broadcast('scroll.refreshComplete');
+
                 alert("Hubo un error al iniciar sesion.");
                 $state.go('paat');
             }
         };
 
-        var getTop = function () {
-            $scope.friends = UserService.getTop();
-        };
 
         $scope.doRefresh = function () {
-            getProfile();
-            getTop();
-            $scope.$broadcast('scroll.refreshComplete');
-        };
 
-        getProfile();
-        getTop();
+            $ionicLoading.show({
+                template: 'Cargando...',
+                showDelay: 500
+            });
+
+            $scope.friends = UserService.getTop();
+            
+            getProfile();
+            // When all promises have been resolved display the results
+            $q.all([$scope.friends.$loaded(), userFirebaseObj.$loaded()]).then(function (data) {
+                $ionicLoading.hide();
+                $scope.$broadcast('scroll.refreshComplete');
+            }, function () {
+                alert("Hubo un error al cargar los datos.");
+                $ionicLoading.hide();
+                $scope.$broadcast('scroll.refreshComplete');
+            });
+        };
 
     })
 
@@ -121,7 +146,12 @@ angular.module('app.controllers', [])
 
     })
 
-    .controller('direccionCtrl', function ($scope, $state, $cordovaGeolocation, $localStorage, UserService) {
+    .controller('direccionCtrl', function ($scope, $state, $cordovaGeolocation, $ionicLoading, $localStorage, UserService, $log) {
+
+        $ionicLoading.show({
+            template: 'Cargando...'
+        });
+
         var options = { timeout: 10000, enableHighAccuracy: true };
 
         var coords = [];
@@ -152,9 +182,12 @@ angular.module('app.controllers', [])
             });
             
             //https://github.com/firebase/geofire-js
+            
+            $ionicLoading.hide();
 
         }, function (error) {
             console.log("Could not get location");
+            $ionicLoading.hide();
         });
 
         $scope.user = UserService.getId($localStorage.id);
@@ -180,7 +213,11 @@ angular.module('app.controllers', [])
                 $scope.isErrored = true;
                 return;
             }
-            UserService.update($localStorage.id, { 'address': $scope.user.address });
+            UserService.update($localStorage.id, { 'address': $scope.user.address, 'requestRecollection': {
+                'requestTime' : (Date.now() / 1000 | 0),
+                'isSatisfaced' : false
+            } });
+
             console.log($scope.user);
             $state.go('menu.puntosCanjeados');
         };

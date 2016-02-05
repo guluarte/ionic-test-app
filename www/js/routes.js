@@ -14,6 +14,7 @@ angular.module('app.routes', [])
             })
             .state('menu.amigos', {
                 url: '/friends',
+                cache: false,
                 views: {
                     'side-menu': {
                         templateUrl: 'templates/amigos.html',
@@ -38,6 +39,7 @@ angular.module('app.routes', [])
             })
             .state('menu.direccion', {
                 url: '/address',
+                cache: false,
                 views: {
                     'side-menu': {
                         templateUrl: 'templates/direccion.html',
@@ -56,6 +58,6 @@ angular.module('app.routes', [])
             });
 
         // if none of the above states are matched, use this as the fallback
-        $urlRouterProvider.otherwise('/side-menu/friends');
+        $urlRouterProvider.otherwise('/login');
 
     });
