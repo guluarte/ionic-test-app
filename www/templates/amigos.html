@@ -31,13 +31,15 @@
                 Top PaatVengers de tu zona
             </div>
 
-            <div ng-repeat="friend in friends | orderBy:'-points'">
-                <div class="item item-avatar">
-                    <img ng-src="{{ friend.facebook.profileImageURL }}">
-                    <h2>{{ friend.facebook.displayName }}</h2>
-                    <p>{{ friend.points || 0 }} <span class="ion-ios-star"></span></p>
+            <ion-process-spinner css-class="spinner-calm" spinner="crescent" processing="isProcessing">
+                <div ng-repeat="friend in friends | orderBy:'-points'">
+                    <div class="item item-avatar">
+                        <img ng-src="{{ friend.facebook.profileImageURL }}">
+                        <h2>{{ friend.facebook.displayName }}</h2>
+                        <p>{{ friend.points || 0 }} <span class="ion-ios-star"></span></p>
+                    </div>
                 </div>
-            </div>
+            </ion-process-spinner>
         </div>
 
     </ion-content>

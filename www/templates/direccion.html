@@ -1,5 +1,6 @@
 <ion-view title="Direccion">
     <ion-content overflow-scroll="true" padding="true" class="has-header">
+
         <div id="map" data-tap-disabled="true"></div>
         <form>
             <div class="list">
@@ -21,7 +22,12 @@
                     </label>
 
                 </div>
-                <input type="submit" class="button button-balanced button-block " ng-click="canjear(user)" value="CANJEAR" />
+                <div class="bar bar-balanced">
+                    <ion-process-spinner css-class="spinner-calm" spinner="crescent" processing="isProcessing">
+                    <div class="title" ng-click="canjear()">CANJEAR</div>
+                     </ion-process-spinner>
+                </div>
+                
             </div>
         </form>
     </ion-content>

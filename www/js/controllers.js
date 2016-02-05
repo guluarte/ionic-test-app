@@ -49,6 +49,7 @@ angular.module('app.controllers', [])
 
     .controller('amigosCtrl', function ($scope, $q, $log, UserService, $localStorage, $state, $ionicHistory, $ionicLoading) {
 
+       
         $ionicHistory.nextViewOptions({
             historyRoot: true
         });
@@ -98,6 +99,7 @@ angular.module('app.controllers', [])
 
         $scope.doRefresh = function () {
             $log.info('Doing refresh');
+             $scope.isProcessing = true;
 /*
             $ionicLoading.show({
                 template: 'Cargando...',
@@ -111,10 +113,12 @@ angular.module('app.controllers', [])
             $q.all([$scope.friends.$loaded(), userFirebaseObj.$loaded()]).then(function (data) {
                 $ionicLoading.hide();
                 $scope.$broadcast('scroll.refreshComplete');
+                 $scope.isProcessing = false;
             }, function () {
                 alert("Hubo un error al cargar los datos.");
                 $ionicLoading.hide();
                 $scope.$broadcast('scroll.refreshComplete');
+                $scope.isProcessing = false;
             });
         };
 
@@ -151,23 +155,24 @@ angular.module('app.controllers', [])
 
     .controller('direccionCtrl', function ($scope,$q ,$state, $cordovaGeolocation, $ionicLoading, $localStorage, UserService, $log) {
 
-        $ionicLoading.show({
-            template: 'Cargando...'
-        });
+         $scope.isProcessing = true;
 
         var options = { timeout: 10000, enableHighAccuracy: true };
 
         var coords = [];
         
         var geoPrmoise = $cordovaGeolocation.getCurrentPosition(options);
-         $scope.user = UserService.getId($localStorage.id);
+        var userFirebaseObj = UserService.getId($localStorage.id);
+        
+        userFirebaseObj.$bindTo($scope, "user");
          
-        $q.all([geoPrmoise, $scope.user.$loaded()]).then(function (data) {
+        $q.all([geoPrmoise, userFirebaseObj.$loaded()]).then(function (data) {
             $log.debug(data);
             
             var position = data[0];
             
             coords = [position.coords.latitude, position.coords.longitude];
+            
             var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
             var mapOptions = {
@@ -195,10 +200,12 @@ angular.module('app.controllers', [])
             //https://github.com/firebase/geofire-js
             
             $ionicLoading.hide();
+             $scope.isProcessing = false;
 
         }, function (error) {
             console.log("Could not get location");
             $ionicLoading.hide();
+             $scope.isProcessing = false;
         });
 
         $scope.canjear = function () {
@@ -223,12 +230,14 @@ angular.module('app.controllers', [])
                 $scope.isErrored = true;
                 return;
             }
-            UserService.update($localStorage.id, { 'address': $scope.user.address, 'requestRecollection': {
+           
+            $scope.user.address.coords = coords || [];
+            
+             UserService.update($localStorage.id, { 'address': $scope.user.address, 'requestRecollection': {
                 'requestTime' : (Date.now() / 1000 | 0),
                 'isSatisfaced' : false
             } });
-
-            $scope.user.address.coords = coords || [];
+            
             console.log($scope.user);
             $state.go('menu.puntosCanjeados');
         };
@@ -284,5 +293,9 @@ angular.module('app.controllers', [])
                     });
                 });
         };
-    })
- 
+    }) 
+    
+    .controller('salirCtrl', function ($log) {
+        $log.info('exiting app');
+        ionic.Platform.exitApp(); // stops the app
+    });

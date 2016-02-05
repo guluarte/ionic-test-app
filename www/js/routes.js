@@ -55,6 +55,14 @@ angular.module('app.routes', [])
                         controller: 'puntosCanjeadosCtrl'
                     }
                 }
+            }).state('menu.salir', {
+                url: '/salir',
+                views: {
+                    'side-menu': {
+                        templateUrl: 'templates/salir.html',
+                        controller: 'salirCtrl'
+                    }
+                }
             });
 
         // if none of the above states are matched, use this as the fallback
