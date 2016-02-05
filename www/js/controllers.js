@@ -1,6 +1,6 @@
 angular.module('app.controllers', [])
 
-    .controller('PaatCtrl', function ($scope, Auth, $localStorage, $state, $ionicHistory, UserService) {
+    .controller('PaatCtrl', function ($scope, Auth, $log, $localStorage, $state, $ionicHistory, UserService) {
 
         $ionicHistory.nextViewOptions({
             historyRoot: true
@@ -15,25 +15,27 @@ angular.module('app.controllers', [])
                 scope: "email,user_friends"
             })
                 .then(function (authData) {
-                    console.log(authData);
+                    $log.debug(authData);
+                    $log.info('OAuth data recivied, uid:'  + authData.uid );
+                    
                     authData.facebook.id = authData.facebook.cachedUserProfile.id;
                     $localStorage.id = authData.facebook.id;
                     $localStorage.facebook = authData.facebook;
 
                     var user = UserService.getId(authData.facebook.id);
-                    console.log(user);
+                    $log.debug(user);
 
                     user.$loaded().then(function () {
                         if (user.points == null) {
 
-                            console.log("setupping init points");
+                            $log.debug("Setupping init points");
                             user.uid = authData.uid;
                             user.points = 50;
                             user.facebook = authData.facebook;
                             user.lastActive = (Date.now() / 1000 | 0);
                             user.$save();
                         } else {
-                            console.log("updating");
+                            $log.debug("Known user, updating.");
                             UserService.update($localStorage.id, { 'facebook': authData.facebook, 'lastActive': (Date.now() / 1000 | 0) });
                         }
 
@@ -45,7 +47,7 @@ angular.module('app.controllers', [])
 
     })
 
-    .controller('amigosCtrl', function ($scope, $q, UserService, $localStorage, $state, $ionicHistory, $ionicLoading) {
+    .controller('amigosCtrl', function ($scope, $q, $log, UserService, $localStorage, $state, $ionicHistory, $ionicLoading) {
 
         $ionicHistory.nextViewOptions({
             historyRoot: true
@@ -95,12 +97,13 @@ angular.module('app.controllers', [])
 
 
         $scope.doRefresh = function () {
-
+            $log.info('Doing refresh');
+/*
             $ionicLoading.show({
                 template: 'Cargando...',
                 showDelay: 500
             });
-
+*/
             $scope.friends = UserService.getTop();
             
             getProfile();
@@ -146,7 +149,7 @@ angular.module('app.controllers', [])
 
     })
 
-    .controller('direccionCtrl', function ($scope, $state, $cordovaGeolocation, $ionicLoading, $localStorage, UserService, $log) {
+    .controller('direccionCtrl', function ($scope,$q ,$state, $cordovaGeolocation, $ionicLoading, $localStorage, UserService, $log) {
 
         $ionicLoading.show({
             template: 'Cargando...'
@@ -155,7 +158,15 @@ angular.module('app.controllers', [])
         var options = { timeout: 10000, enableHighAccuracy: true };
 
         var coords = [];
-        $cordovaGeolocation.getCurrentPosition(options).then(function (position) {
+        
+        var geoPrmoise = $cordovaGeolocation.getCurrentPosition(options);
+         $scope.user = UserService.getId($localStorage.id);
+         
+        $q.all([geoPrmoise, $scope.user.$loaded()]).then(function (data) {
+            $log.debug(data);
+            
+            var position = data[0];
+            
             coords = [position.coords.latitude, position.coords.longitude];
             var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
@@ -190,14 +201,13 @@ angular.module('app.controllers', [])
             $ionicLoading.hide();
         });
 
-        $scope.user = UserService.getId($localStorage.id);
-
         $scope.canjear = function () {
 
-            $scope.isErrored = false;
-
-            $scope.user.address.coords = coords;
+            $log.debug($scope.user);
+            
+            $scope.isErrored = false;       
             // Validate
+            $scope.user.address = $scope.user.address || {};
             
             if ($scope.user.address.street === undefined || $scope.user.address.street === null) {
                 $scope.isErrored = true;
@@ -218,6 +228,7 @@ angular.module('app.controllers', [])
                 'isSatisfaced' : false
             } });
 
+            $scope.user.address.coords = coords || [];
             console.log($scope.user);
             $state.go('menu.puntosCanjeados');
         };
