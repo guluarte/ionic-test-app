@@ -9,8 +9,15 @@ angular.module('app.routes', [])
         $stateProvider
             .state('paat', {
                 url: '/login',
+                cache: false,
                 templateUrl: 'templates/paat.html',
                 controller: 'PaatCtrl'
+            })
+            .state('loading', {
+                url: '/loading',
+                cache: false,
+                templateUrl: 'templates/loading.html',
+                controller: 'LoadingCtrl'
             })
             .state('menu.amigos', {
                 url: '/friends',

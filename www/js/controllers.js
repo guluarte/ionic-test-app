@@ -1,5 +1,4 @@
 angular.module('app.controllers', [])
-
     .controller('PaatCtrl', function ($scope, Auth, $log, $localStorage, $state, $ionicHistory, UserService) {
 
         $ionicHistory.nextViewOptions({
@@ -10,11 +9,20 @@ angular.module('app.controllers', [])
         });
 
         $scope.loginWithFacebook = function loginWithFacebook() {
-            Auth.$authWithOAuthPopup('facebook', {
-                remember: "default",
-                scope: "email,user_friends"
-            })
-                .then(function (authData) {
+            $state.go('loading');
+        };
+
+    })
+    .controller('LoadingCtrl', function($log, $state, $ionicHistory, rootRef, $scope, UserService, $localStorage) {
+        
+        $ionicHistory.nextViewOptions({
+            historyRoot: true
+        });
+        $scope.$on('$ionicView.beforeEnter', function (e, config) {
+            config.enableBack = false;
+        });
+
+            rootRef.authWithOAuthPopup('facebook', function (error, authData) {
                     $log.debug(authData);
                     $log.info('OAuth data recivied, uid:'  + authData.uid );
                     
@@ -42,11 +50,12 @@ angular.module('app.controllers', [])
                         $state.go('menu.amigos');
                     });
 
-                });
-        };
-
+                }, {
+                remember: "default",
+                scope: "email,user_friends"
+            });
     })
-
+    
     .controller('amigosCtrl', function ($scope, $q, $log, UserService, $localStorage, $state, $ionicHistory, $ionicLoading) {
 
        
@@ -65,6 +74,8 @@ angular.module('app.controllers', [])
 
             if ($localStorage.hasOwnProperty("id") === true) {
 
+                UserService.setActive($localStorage.id);
+                
                 console.log($localStorage.id);
 
                 userFirebaseObj = UserService.getId($localStorage.id);
@@ -172,7 +183,7 @@ angular.module('app.controllers', [])
             var position = data[0];
             
             coords = [position.coords.latitude, position.coords.longitude];
-            
+               
             var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 
             var mapOptions = {
@@ -205,6 +216,7 @@ angular.module('app.controllers', [])
         }, function (error) {
             console.log("Could not get location");
             $ionicLoading.hide();
+            
              $scope.isProcessing = false;
         });
 
@@ -215,7 +227,7 @@ angular.module('app.controllers', [])
             $scope.isErrored = false;       
             // Validate
             $scope.user.address = $scope.user.address || {};
-            
+            $scope.user.address.coords = coords || [];
             if ($scope.user.address.street === undefined || $scope.user.address.street === null) {
                 $scope.isErrored = true;
                 return;
@@ -230,16 +242,24 @@ angular.module('app.controllers', [])
                 $scope.isErrored = true;
                 return;
             }
-           
-            $scope.user.address.coords = coords || [];
+            
+             $ionicLoading.show({
+                template: 'Enviando...',
+                showDelay: 500
+            });
             
              UserService.update($localStorage.id, { 'address': $scope.user.address, 'requestRecollection': {
                 'requestTime' : (Date.now() / 1000 | 0),
                 'isSatisfaced' : false
-            } });
+            } }, function() {
+                $ionicLoading.hide();
+                $scope.isProcessing = false;
+                console.log($scope.user);
+                $state.go('menu.puntosCanjeados');
+            });
             
-            console.log($scope.user);
-            $state.go('menu.puntosCanjeados');
+            UserService.setActive($localStorage.id);
+            
         };
     })
 
