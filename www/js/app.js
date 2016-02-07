@@ -8,29 +8,34 @@
 
 var firebaseRootRef;
 
-angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.services', 'app.directives', 'ngCordova', 'ngStorage', 'firebase', 'angularGeoFire', 'ionicProcessSpinner'])
 
-    .run(function ($ionicPlatform) {
-        $ionicPlatform.ready(function () {
+(function (angular, firebaseRootRef) {
 
-            firebaseRootRef = new Firebase('https://paat.firebaseio.com');
+    angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.services', 'app.directives', 'ngCordova', 'ngStorage', 'firebase', 'angularGeoFire', 'ionicProcessSpinner'])
 
-            firebaseRootRef.child(".info/connected").on("value", function (snap) {
-                if (snap.val() === true) {
-                    console.info("Firebase connected")
-                } else {
-                    console.info("Firebase disconnected");
+        .run(function ($ionicPlatform) {
+            $ionicPlatform.ready(function () {
+
+                firebaseRootRef = new Firebase('https://paat.firebaseio.com');
+                // Connect to firebase as soon as possible
+                Firebase.goOnline();
+                firebaseRootRef.child(".info/connected").on("value", function (snap) {
+                    if (snap.val() === true) {
+                        console.info("Firebase connected")
+                    } else {
+                        console.info("Firebase disconnected");
+                    }
+                });
+            
+                // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
+                // for form inputs)
+                if (window.cordova && window.cordova.plugins.Keyboard) {
+                    cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+                }
+                if (window.StatusBar) {
+                    // org.apache.cordova.statusbar required
+                    StatusBar.styleDefault();
                 }
             });
-            
-            // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
-            // for form inputs)
-            if (window.cordova && window.cordova.plugins.Keyboard) {
-                cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-            }
-            if (window.StatusBar) {
-                // org.apache.cordova.statusbar required
-                StatusBar.styleDefault();
-            }
         });
-    })
+})(angular, firebaseRootRef);

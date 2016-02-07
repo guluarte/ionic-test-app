@@ -5,7 +5,7 @@
             <div class="item item-avatar">
                 <img ng-src="{{ user.facebook.profileImageURL }}">
                 <h2>{{ user.facebook.displayName }}</h2>
-                <p>{{ user.points }} <span class="ion-ios-star"></span></p>
+                <p>{{ user.points || 0 }} <span class="ion-ios-star"></span></p>
             </div>
 
             <div class="item item-body">

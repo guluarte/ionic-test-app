@@ -1,6 +1,10 @@
-angular.module('app.directives', [])
+(function (angular) {
+    'use strict';
 
-.directive('blankDirective', [function(){
+    angular.module('app.directives', [])
 
-}]);
+        .directive('blankDirective', [function () {
 
+        }]);
+
+})(angular);
