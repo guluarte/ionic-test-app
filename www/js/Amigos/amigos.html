@@ -1,4 +1,4 @@
-<ion-view title="PAAT" ng-init="doRefresh()">
+<ion-view title="PAAT">
     <!--
     <ion-nav-title class="main-screen">
         <div class="item item-avatar profile-avatar" ui-sref="menu.usuario">
@@ -11,19 +11,19 @@
     -->
 
     <ion-content padding="true" class="has-header padding-bottom">
-        <ion-refresher on-refresh="doRefresh()">
+        <ion-refresher on-refresh="vm.doRefresh()">
         </ion-refresher>
 
         <div class="card">
             <div class="item item-divider">
                 {{ user.facebook.displayName }}
             </div>
-            <ion-process-spinner css-class="spinner-calm" spinner="crescent" processing="isProcessing">
+            <ion-process-spinner css-class="spinner-calm" spinner="crescent" processing="vm.isProcessing">
                 <div class="item item-avatar">
 
-                    <img ng-src="{{ user.facebook.profileImageURL }}">
-                    <h2>{{ user.facebook.displayName }}</h2>
-                    <p>{{ user.points || 0 }} <span class="ion-ios-star"></span></p>
+                    <img ng-src="{{ vm.user.facebook.profileImageURL }}">
+                    <h2>{{ vm.user.facebook.displayName }}</h2>
+                    <p>{{ vm.user.points || 0 }} <span class="ion-ios-star"></span></p>
 
                 </div>
             </ion-process-spinner>
@@ -35,8 +35,8 @@
                 Top PaatVengers de tu zona
             </div>
 
-            <ion-process-spinner css-class="spinner-calm" spinner="crescent" processing="isProcessing">
-                <div ng-repeat="friend in friends | orderBy:'-points'">
+            <ion-process-spinner css-class="spinner-calm" spinner="crescent" processing="vm.isProcessing">
+                <div ng-repeat="friend in vm.friends | orderBy:'-points'">
                     <div class="item item-avatar">
                         <img ng-src="{{ friend.facebook.profileImageURL }}">
                         <h2>{{ friend.facebook.displayName }}</h2>

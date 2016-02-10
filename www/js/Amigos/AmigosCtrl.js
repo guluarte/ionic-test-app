@@ -1,8 +1,28 @@
-(function (angular) {
+(function () {
 
-    var module = angular.module('app.controllers');
+    angular.module('app.controllers')
+        .controller('amigosCtrl', AmigosCtrl);
 
-    module.controller('amigosCtrl', function ($scope, $q, $log, UserService, $localStorage, $state, $ionicHistory, $ionicLoading) {
+    AmigosCtrl.$inject = [
+        '$scope',
+        '$q',
+        '$timeout',
+        '$log',
+        '$ionicPlatform',
+        'UserService',
+        '$localStorage',
+        '$state',
+        '$ionicHistory',
+        '$ionicLoading'
+    ];
+
+    function AmigosCtrl($scope, $q, $timeout, $log, $ionicPlatform, UserService, $localStorage, $state, $ionicHistory, $ionicLoading) {
+
+        var vm = this;
+        
+        vm.doRefresh = function () {
+            refresh();
+        };
 
         $ionicHistory.nextViewOptions({
             historyRoot: true
@@ -11,55 +31,47 @@
         $scope.$on('$ionicView.beforeEnter', function (e, config) {
             config.enableBack = false;
             $ionicHistory.clearHistory();
+            refresh();
         });
 
-        var userFirebaseObj;
+        var refresh = function () {
+            $ionicPlatform.ready(function () {
+                $log.info('Doing refresh');
 
-        var getProfile = function () {
+                vm.isProcessing = true;
 
-            if ($localStorage.hasOwnProperty("id") === true) {
+                if ($localStorage.hasOwnProperty("id") === true) {
 
-                UserService.setActive($localStorage.id);
+                    UserService.setActive($localStorage.id);
+                    $log.info($localStorage.id);
 
-                console.log($localStorage.id);
+                    vm.user = UserService.getId($localStorage.id);
+                    vm.friends = UserService.getTop();
+                        
+                    // When all promises have been resolved display the results
+                    $q.all([vm.friends.$loaded(), vm.user.$loaded()]).then(function (data) {
 
-                userFirebaseObj = UserService.getId($localStorage.id);
+                        $ionicLoading.hide();
+                        $scope.$broadcast('scroll.refreshComplete');
+                        vm.isProcessing = false;
 
-                userFirebaseObj.$bindTo($scope, "user");
+                    }, function () {
+                        alert("Hubo un error al cargar los datos.");
+                        $ionicLoading.hide();
+                        $scope.$broadcast('scroll.refreshComplete');
+                        vm.isProcessing = false;
+                    });
 
-            } else {
+                } else {
+                    $scope.$broadcast('scroll.refreshComplete');
+                    alert("Hubo un error al iniciar sesion.");
+                    $state.go('paat');
+                }
 
-                $ionicLoading.hide();
-                $scope.$broadcast('scroll.refreshComplete');
-
-                alert("Hubo un error al iniciar sesion.");
-                $state.go('paat');
-            }
-        };
-
-
-        $scope.doRefresh = function () {
-            $log.info('Doing refresh');
-            $scope.isProcessing = true;
-
-            $scope.friends = UserService.getTop();
-
-            getProfile();
-            // When all promises have been resolved display the results
-            $q.all([$scope.friends.$loaded(), userFirebaseObj.$loaded()]).then(function (data) {
-
-                $ionicLoading.hide();
-                $scope.$broadcast('scroll.refreshComplete');
-                $scope.isProcessing = false;
-
-            }, function () {
-                alert("Hubo un error al cargar los datos.");
-                $ionicLoading.hide();
-                $scope.$broadcast('scroll.refreshComplete');
-                $scope.isProcessing = false;
             });
         };
 
-    });
 
-})(angular);
+    }
+
+})();

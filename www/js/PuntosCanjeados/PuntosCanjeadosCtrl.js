@@ -1,8 +1,20 @@
-(function (angular) {
+(function () {
 
-    var module = angular.module('app.controllers');
+    angular.module('app.controllers')
+        .controller('puntosCanjeadosCtrl', PuntosCanjeados);
 
-    module.controller('puntosCanjeadosCtrl', function ($scope, $ionicPlatform, $state, $localStorage, $ionicPopup, UserService, $cordovaSocialSharing) {
+    PuntosCanjeados.$inject = [
+        '$scope',
+        '$log',
+        '$ionicPlatform',
+        '$state',
+        '$localStorage',
+        '$ionicPopup',
+        'UserService',
+        '$cordovaSocialSharing'
+    ];
+    
+    function PuntosCanjeados($scope, $log, $ionicPlatform, $state, $localStorage, $ionicPopup, UserService, $cordovaSocialSharing) {
 
         $scope.$on('$ionicView.beforeEnter', function (e, config) {
             config.enableBack = false;
@@ -16,17 +28,17 @@
                 $cordovaSocialSharing
                     .shareViaFacebook('test', 'test', 'test')
                     .then(function (result) {
-                        console.log(result);
+                        $log.info(result);
                         var alertPopup = $ionicPopup.alert({
                             title: 'Gracias por compartir via facebook'
                         });
                         alertPopup.then(function (res) {
                         });
                     }, function (err) {
-                        console.log(err);
+                        $log.info(err);
                         var alertPopup = $ionicPopup.alert({
-                            title: 'Could not post to Facebook',
-                            template: 'Do you have the app installed?'
+                            title: 'No se pudo compartir en Facebook',
+                            template: 'Cuenta con la aplicacion instalada?'
                         });
                         alertPopup.then(function (res) {
                         });
@@ -34,6 +46,6 @@
 
             });
         };
-    });
+    }
 
-})(angular);
+})();

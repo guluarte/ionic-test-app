@@ -1,8 +1,10 @@
-(function (angular) {
+(function () {
 
-    var module = angular.module('app.controllers');
+    angular.module('app.controllers')
+        .controller('PaatCtrl', Paat);
 
-    module.controller('PaatCtrl', function ($scope, Auth, $log, $localStorage, $state, $ionicHistory, UserService) {
+    Paat.$inject = ['$scope', 'Auth', '$log', '$localStorage', '$state', '$ionicHistory', 'UserService'];
+    function Paat($scope, Auth, $log, $localStorage, $state, $ionicHistory, UserService) {
 
         $ionicHistory.nextViewOptions({
             historyRoot: true
@@ -15,6 +17,6 @@
             $state.go('loading');
         };
 
-    });
+    }
 
-})(angular);
+})();

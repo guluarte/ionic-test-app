@@ -1,8 +1,11 @@
-(function (angular) {
+(function () {
 
-    var module = angular.module('app.controllers');
+    angular.module('app.controllers')
+        .controller('reciclarCtrl', Reciclar);
 
-    module.controller('reciclarCtrl', function ($scope) {
+    Reciclar.$inject = ['$scope'];
+    
+    function Reciclar($scope) {
         $scope.items = [];
 
         $scope.items.push({
@@ -29,6 +32,6 @@
             description: 'alluminium desc'
         });
 
-    });
+    }
 
-})(angular);
+})();

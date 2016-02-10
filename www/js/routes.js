@@ -29,7 +29,8 @@
                     views: {
                         'side-menu': {
                             templateUrl: 'js/Amigos/amigos.html',
-                            controller: 'amigosCtrl'
+                            controller: 'amigosCtrl',
+                            controllerAs: 'vm'
                         }
                     }
                 })
