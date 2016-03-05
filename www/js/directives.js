@@ -1,4 +1,4 @@
-(function (angular) {
+(function () {
     'use strict';
 
     angular.module('app.directives', [])
@@ -7,4 +7,4 @@
 
         }]);
 
-})(angular);
+})();

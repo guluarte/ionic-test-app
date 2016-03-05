@@ -1,4 +1,4 @@
-(function (angular) {
+(function () {
 
     angular.module('app.controllers')
         .controller('LoadingCtrl', Loading);
@@ -39,4 +39,4 @@
                 scope: "email,user_friends"
             });
     }
-})(angular);
+})();

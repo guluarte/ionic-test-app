@@ -19,7 +19,7 @@
     function AmigosCtrl($scope, $q, $timeout, $log, $ionicPlatform, UserService, $localStorage, $state, $ionicHistory, $ionicLoading) {
 
         var vm = this;
-        
+
         vm.doRefresh = function () {
             refresh();
         };
@@ -35,43 +35,40 @@
         });
 
         var refresh = function () {
-            $ionicPlatform.ready(function () {
-                $log.info('Doing refresh');
 
-                vm.isProcessing = true;
+            $log.info('Doing refresh');
 
-                if ($localStorage.hasOwnProperty("id") === true) {
+            vm.isProcessing = true;
 
-                    UserService.setActive($localStorage.id);
-                    $log.info($localStorage.id);
+            if ($localStorage.hasOwnProperty("id") === true) {
 
-                    vm.user = UserService.getId($localStorage.id);
-                    vm.friends = UserService.getTop();
+                UserService.setActive($localStorage.id);
+                $log.info($localStorage.id);
+
+                vm.user = UserService.getId($localStorage.id);
+                vm.friends = UserService.getTop();
                         
-                    // When all promises have been resolved display the results
-                    $q.all([vm.friends.$loaded(), vm.user.$loaded()]).then(function (data) {
+                // When all promises have been resolved display the results
+                $q.all([vm.friends.$loaded(), vm.user.$loaded()]).then(function (data) {
 
-                        $ionicLoading.hide();
-                        $scope.$broadcast('scroll.refreshComplete');
-                        vm.isProcessing = false;
-
-                    }, function () {
-                        alert("Hubo un error al cargar los datos.");
-                        $ionicLoading.hide();
-                        $scope.$broadcast('scroll.refreshComplete');
-                        vm.isProcessing = false;
-                    });
-
-                } else {
+                    $ionicLoading.hide();
                     $scope.$broadcast('scroll.refreshComplete');
-                    alert("Hubo un error al iniciar sesion.");
-                    $state.go('paat');
-                }
+                    vm.isProcessing = false;
 
-            });
+                }, function () {
+                    alert("Hubo un error al cargar los datos.");
+                    $ionicLoading.hide();
+                    $scope.$broadcast('scroll.refreshComplete');
+                    vm.isProcessing = false;
+                });
+
+            } else {
+                $scope.$broadcast('scroll.refreshComplete');
+                alert("Hubo un error al iniciar sesion.");
+                $state.go('paat');
+            }
+
         };
-
-
     }
 
 })();

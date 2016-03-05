@@ -1,4 +1,4 @@
-(function (angular) {
+(function () {
 
     'use strict';
 
@@ -7,4 +7,4 @@
             return $firebaseAuth(rootRef);
         });
 
-})(angular);
+})();

@@ -9,7 +9,7 @@
 var firebaseRootRef;
 
 
-(function (angular, firebaseRootRef) {
+(function (firebaseRootRef) {
 
     angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.services', 'app.directives', 'ngCordova', 'ngStorage', 'firebase', 'angularGeoFire', 'ionicProcessSpinner'])
 
@@ -38,4 +38,4 @@ var firebaseRootRef;
                 }
             });
         });
-})(angular, firebaseRootRef);
+})(firebaseRootRef);

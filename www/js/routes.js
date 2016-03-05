@@ -1,4 +1,4 @@
-(function (angular) {
+(function () {
     
     'use strict';
     
@@ -15,7 +15,8 @@
                     url: '/login',
                     cache: false,
                     templateUrl: 'js/Login/paat.html',
-                    controller: 'PaatCtrl'
+                    controller: 'PaatCtrl',
+                    controllerAs: 'vm'
                 })
                 .state('loading', {
                     url: '/loading',
@@ -73,4 +74,4 @@
             $urlRouterProvider.otherwise('/login');
 
         });
-})(angular);
+})();

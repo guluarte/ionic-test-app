@@ -1,5 +1,5 @@
-(function (angular) {
+(function () {
 
     angular.module('app.controllers', []);;
 
-})(angular);
+})();

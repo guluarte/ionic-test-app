@@ -1,4 +1,4 @@
-(function (angular) {
+(function () {
     'use strict';
 
     angular.module('app.services')
@@ -47,4 +47,4 @@
             };
         });
         
-})(angular);
+})();
